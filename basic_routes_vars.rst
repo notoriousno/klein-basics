@@ -42,6 +42,13 @@ This application will create a web server listening on the ``localhost`` interfa
    curl localhost:9000
    curl localhost:9000/hello
 
+
+Return Types
+------------
+
+Klein accepts ``bytes``, ASCII encoded string, a Twisted Resource, or Renderabl
+
+
 Request Methods
 ---------------
 
