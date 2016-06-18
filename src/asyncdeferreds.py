@@ -1,7 +1,7 @@
 from time import sleep
 
 from klein import Klein
-import treq
+from twisted.web.client import getPage
 from twisted.internet import defer, threads, reactor
 
 
@@ -11,8 +11,9 @@ with app.subroute('/tasks') as subroute:
 
     @subroute.route('/phishing/<url>')
     def phishAttack(request, url):
-        d = treq.get('www.%s.com' % url)
-        d.addCallbacks(treq.content, error)
+        bytesUrl = '.'.join(['http://www', url, 'com']).encode('utf-8')
+        d = getPage(bytesUrl)
+        # d.addCallback(convertToBytes)
         return d
 
     @subroute.route('/sleep/<int:n>')
@@ -20,6 +21,9 @@ with app.subroute('/tasks') as subroute:
         d = threads.deferToThread(blockingTask,n)
         d.addCallback(addTag, 'h1')
         return d
+
+def convertToBytes(result):
+    return bytes(result.encode('utf-8'))
 
 def error(failure):
     print('uh oh hotdog!')
