@@ -7,7 +7,9 @@ Do you like ``expressjs``, but don't want to switch to Node.js?  Want non-blocki
 Simple Deferred
 ---------------
 
-Let's take a simple spin on deferreds.  Two endpoints will be created, one will create a callback chain and another will actually start the callback chain.  "What's a callback chain?"  I'm glad you asked!  In layman's terms, a callback chain is a sequence of events that that occur after an event occurs.  I'll elaborate further after the example.::
+Let's take a simple spin on deferreds.  Two endpoints will be created, one will create a callback chain and another will actually start the callback chain.  "What's a callback chain?"  I'm glad you asked!  In layman's terms, a callback chain is a sequence of events that that occur after an event occurs.  I'll elaborate further after the example.
+
+.. code-block:: python
 
     def addTag(text, tag):
         return '<{0}>{1}</{0}>'.format(tag, text)
@@ -36,7 +38,9 @@ The ``/simple`` route, initializes a global ``Deferred`` object and subsequent c
 Error Handling
 --------------
 
-``Deferred`` can be utilized like try/except blocks, in fact, the underlaying code actually uses this exception handling to launch error callbacks.  Just like standard exception handling, when an error is raised, a specific code can be run in the ``exception`` section.  To execute a specific function when an error occurs, we have to add an error callback by using ``Deferred.addErrback()`` or ``Deferred.addCallbacks()`` (notice the 's' for plural, for callbacks and errorbacks).::
+``Deferred`` can be utilized like try/except blocks, in fact, the underlaying code actually uses this exception handling to launch error callbacks.  Just like standard exception handling, when an error is raised, a specific code can be run in the ``exception`` section.  To execute a specific function when an error occurs, we have to add an error callback by using ``Deferred.addErrback()`` or ``Deferred.addCallbacks()`` (notice the 's' for plural, for callbacks and errorbacks).
+
+.. code-block:: python
 
     @app.route('/error')
     def asyncError(request):
@@ -57,7 +61,9 @@ Error Handling
         err.addCallback(addTag, 'strong')               # make the error msg bold
         return d
 
-In this example, the function ``raiseError()`` results in a traceback and a triggers an error-back, which itself returns a ``Deferred``.  Since error-backs return ``Deferred``, you can chain callbacks to them.  In this case, the error message is displayed in bold.  Basically this is what's happening::
+In this example, the function ``raiseError()`` results in a traceback and a triggers an error-back, which itself returns a ``Deferred``.  Since error-backs return ``Deferred``, you can chain callbacks to them.  In this case, the error message is displayed in bold.  Basically this is what's happening:
+
+.. code-block:: python
 
     try:
         int('hello')
@@ -69,7 +75,9 @@ In this example, the function ``raiseError()`` results in a traceback and a trig
 "Coroutines"
 ------------
 
-With the advent of Tornado, many have grown to like coroutines as opposed to callbacks or promise approaches.  Klein can leverage what are known as ``inlineCallbacks`` which work very similarly to coroutines.  With coroutines and ``inlineCallbacks``, you can "wait" or ``yield`` a result without blocking your entire application.::
+With the advent of Tornado, many have grown to like coroutines as opposed to callbacks or promise approaches.  Klein can leverage what are known as ``inlineCallbacks`` which work very similarly to coroutines.  With coroutines and ``inlineCallbacks``, you can "wait" or ``yield`` a result without blocking your entire application.:
+
+.. code-block:: python
 
     def addTag(text, tag):
         return '<{0}>{1}</{0}>'.format(tag, text)

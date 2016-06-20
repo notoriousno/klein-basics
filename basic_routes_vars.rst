@@ -17,7 +17,6 @@ Routes *aka* Hello World
 ------------------------
 
 .. code-block:: python
-   :linenos:
 
    from klein import Klein
 
@@ -46,7 +45,7 @@ This application will create a web server listening on the ``localhost`` interfa
 Return Types
 ------------
 
-Klein accepts ``bytes``, ASCII encoded string, a Twisted Resource, or Renderabl
+Klein accepts ``bytes``, ASCII encoded string, a Twisted Resource, or Renderable.
 
 
 Request Methods
@@ -55,7 +54,6 @@ Request Methods
 The HTTP methods ``GET``, ``POST``, ``PUT``, ``DELETE`` are common amongst web applications.  In Klein, routes can be explicitly tied to request methods by passing in a list of the methods names via a parameter aptly called ``methods``.  If no explict method is specified, then all methods will be accepted.
 
 .. code-block:: python
-   :linenos:
 
    import json
    from klein import Klein
@@ -89,7 +87,6 @@ The ``/methods`` endpoint will output JSON data if and only if the endpoint is a
 Speaking of “any method”, custom methods can also be used.  For instance, let’s say your application requires a method called “GOOGLE”.  All that needs to be done is to add “GOOGLE” to the list of methods then check using ``curl -X GOOGLE``.
 
 .. code-block:: python
-   :linenos:
 
    @app.route('/methods', methods=['POST', 'delete', 'GOOGLE'])
    def specificMethods(request):
@@ -105,8 +102,7 @@ Variables
 Variables works by simply appending a variable name surrounded by angle brackets to the URL string.  Variables allow for your app to take in any string parameter and use it in the function corresponding to the route.  As an example, the following will display a message followed by a name passed in from the URL:
 
 .. code-block:: python
-   :linenos:
-
+   
    @app.route('/hello/<name>')
    def helloName(request, name):
        return 'Hello %s!' % name
@@ -114,7 +110,7 @@ Variables works by simply appending a variable name surrounded by angle brackets
 Optionally, a type specifier can be supplied so that the string variable will be cast to a specified type.  This allows variables to be validated without extraneous code.  Out of the box, the specifiers are ``int``, ``float``, and ``path``.
 
 .. code-block:: python
-   :linenos:
+   
 
    @app.route('/hello/<name>/<int:age>')
    def helloNameAge(request, name, age):
@@ -129,7 +125,6 @@ Final Example
 -------------
 
 .. code-block:: python
-   :linenos:
 
    import json
    from klein import Klein
