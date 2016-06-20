@@ -5,3 +5,5 @@ Makefile
 _static/
 _templates/
 index.rst
+*.log
+*.swp
