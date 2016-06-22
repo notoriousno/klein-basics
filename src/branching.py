@@ -1,7 +1,7 @@
 from klein import Klein
 from twisted.web.static import File
 
-import subroutes
+import blueprints
 
 
 app = Klein()
@@ -9,7 +9,7 @@ app = Klein()
 
 @app.route('/branch', branch=True)
 def branchOff(request):
-    return subroutes.app.resource()
+    return blueprints.app.resource()
 
 @app.route('/static', branch=True)
 def static(request):

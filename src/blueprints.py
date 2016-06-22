@@ -6,7 +6,7 @@ app = Klein()
 def index(request):
     return 'Hello from the subroutes example'
 
-with app.subroute('/base') as sub:
+with app.subroute('/blue') as sub:
     @sub.route('/first')
     def first(request):
         return 'first'

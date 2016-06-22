@@ -31,4 +31,5 @@ def specificMethods(request):
                        'list': [1,2,3]
                      })
 
-app.run(host='localhost', port=9000)
+if __name__ == '__main__':
+    app.run(host='localhost', port=9000)
