@@ -26,17 +26,17 @@ This is very valid code, but there's a simpler syntax that can prevent some comm
 
    with app.subroute('/base') as sub:
 
-       @sub.route('/first')
-       def first(request):
-           return 'first'
+        @sub.route('/first')
+        def first(request):
+            return 'first'
 
-       @sub.route('/second')
-       def second(request):
-           return 'second'
+        @sub.route('/second')
+        def second(request):
+            return 'second'
 
-       @sub.route('/third')
-       def third(request):
-           return 'third'
+        @sub.route('/third')
+        def third(request):
+            return 'third'
 
 Distributed???
 --------------
@@ -67,6 +67,7 @@ It's an inevitable fact that your application will grow and the need for simpler
            return 'third'
 
 Now lets use this in another ``klein`` application.
+=======
 
 
 Static Files
