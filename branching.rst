@@ -67,7 +67,6 @@ It's an inevitable fact that your application will grow and the need for simpler
            return 'third'
 
 Now lets use this in another ``klein`` application.
-=======
 
 
 Static Files

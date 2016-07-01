@@ -9,7 +9,7 @@ Deferred Overview
 
 * think of it in reverse order!
 
-Create a ``Deferred`` object and attach functions (otherwise known as ``callbacks``) that will occur after a result has been returned.  Callbacks are appended to ``Deferred`` objects by way of ``addCallback()`` for when a successful result is returned or ``addErrback()`` for when an error has occurred.  The callback functions take the function name, followed by arguments and keyword arguments.
+Create a ``Deferred`` object and attach functions (otherwise known as ``callbacks``) that will occur after a result has been returned.  Callbacks are appended to ``Deferred`` objects by way of ``addCallback()`` for when a successful result is returned or ``addErrback()`` for when an error has occurred.  The callback functions take the function name, followed by arguments and keyword arguments.  Then, when the result is available, the ``callback`` function is executed and the callback chain will be executed.  Don't worry if this doesn't make sense now, the code should clear it up.
 
 .. code-block:: python
 
@@ -22,12 +22,15 @@ Create a ``Deferred`` object and attach functions (otherwise known as ``callback
    def errorHasHappened(failure, msg):
        print(msg)
 
+   # Create deferred obj and callback chain
    d = defer.Deferred()
    d.addCallback(addition, 1, 2, 3, 4)
    d.addErrback(print, 'This is an error!')
-   d.addBoth(print)
+   d.addBoth(print)         # addBoth states the function is both called as a callback and errback
 
-First, callback and error-back functions are established (``adition()`` and ``errorHasHappend()`` in this case).  Then upon successful execution and returning of a valid result, .  Alternative way to fire callbacks immediately.
+   d.callback(100)          # start the callback chain
+
+First, callback and error-back functions are established (``adition()`` and ``errorHasHappend()`` in this case).  Then upon successful execution and returning of a valid result of 100 (ie. ``d.callback(100)``), the callback chain starts, ``1, 2, 3, 4`` are added to ``100`` then the final result is printed (via ``d.addBoth(print)``.  Alternative way to fire callbacks immediately.
 
 .. code-block:: python
 
