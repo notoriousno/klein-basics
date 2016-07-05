@@ -15,10 +15,15 @@ Contents
    basic_routes_vars
    nonblocking
    branching
+   requestobject
+   sessions
+   databases
 
 
 Introduction
 ============
+
+There's a fantastic Python web framework out there called Klein.  It leverages the power of industry giants Werkzeug and Twisted.  It's asynchronous and very easy to pick up.  I've been using it now for about 2+ years and I'm amazed at what I'm able to achieve.  Fortunate for me, I learned Flask and Twisted very early on in my career, so I as able to pick up on Klein rather well.  Others may not be as fortunate.  Klein requires and expects a good understanding of Twisted as well as Werkzeug, but not all may posses this knowledge and the online resources are scarce (but growing).  My hope is to "demystify" some concepts and provide recipes which are provided in other frameworks.  I hope to effectivly demonstrate how easily one can write asynchronous applications, like the ones created Tornado, with minimal effort, like the ones created using Flask or Hug.
 
 With Python finally getting async functionality out of the box and a plethora of web frameworks exposing those capabilities, I thought I'd create a basic how-to using another asynchronous framework.  There’s a great asynchronous Python web framework out there called Klein.  It hasn’t gotten the same love that other web frameworks has received, such as Tornado, Werkzeug/Flask, Django, or Falcon/Hug.  One reason for the lackluster popularity may be due to the sparse documentation and "cryptic" nature of the underlying Twisted framework.  Hopefully, the following posts will shed some light on Klein and bring the documentation up to the standards of the other more prominent frameworks.  The hope is to extend Klein’s documentation as well as provide detailed examples.
 

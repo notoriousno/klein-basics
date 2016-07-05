@@ -4,24 +4,43 @@ from twisted.web.server import Session
 from zope.interface import Interface, Attribute, implementer
 
 
+#---------- Interface and Classes ----------#
 class ICounter(Interface):
-    value = Attribute("An int value which counts up")
+    """
+    An interface or template class which documents parameters a Counter 
+    class should have.
+    """
+    count = Attribute("An int value which counts up")
+    user = Attribute("A username associated with this session")
 
 @implementer(ICounter)
 class Counter(object):
+    """
+    Keeps track user visits
+    """
+
     def __init__(self, session):
-        self.value = 0
+        self.count = 0
+        self.user = None
 
-registerAdapter(Counter, Session, ICounter)
+registerAdapter(Counter, Session, ICounter)     # don't worry about what this does, just do it!
 
 
+#---------- Klein Routes ----------#
 app = Klein()
 
-@app.route('/')
+@app.route('/session')
 def GET(request):
+    """
+    Retrieves the session for the request, bumps up the counter, and sets
+    a user if provided in the header.
+    """
     session = request.getSession()
     counter = ICounter(session)
-    counter.value += 1
-    return "Visit #%d for you!" % (counter.value)
+    counter.count += 1
+    if not counter.user:
+        counter.user = request.getHeader('UserName')
+
+    return "Visit #{0} for {1}!".format(counter.count, counter.user)
 
 app.run('localhost', 9000)
