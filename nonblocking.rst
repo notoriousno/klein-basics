@@ -1,7 +1,7 @@
 Non-blocking Routes
 ===================
 
-Do you like ``expressjs``, but don't want to switch to Node.js?  Want non-blocking execution in Python?  Then look no further!  Non-blocking, otherwise known as asynchronous, execution is the very essence of what makes Klein a contender in todays web framework landscape.  It's also the most difficult concept to grasp since most Pythonistas are not accustomed to asynchronous programming.  This will hopefully change over time because Python has introduced ``asyncio``.  Since Klein is built atop Twisted, developers can expose ``Deferred`` objects, which are similar to Promises (from Node.js) and Futures (from Python's own ``asyncio``).  However, in this example, a very brief overview will be given on Twisted ``Deferred``, instead you're encouraged to read the Twisted documents on the subject (provided in the links near the bottom).
+Do you like ``expressjs``, but don't want to switch to Node.js?  Want non-blocking execution in Python?  Then look no further!  Asynchronous execution is the very essence of what makes Klein a contender in todays web framework landscape.  It's also the most difficult concept to grasp since most Pythonistas are not accustomed to asynchronous programming.  Hopefully with the addition ``asyncio`` to Python's standard library, this will change.  Klein is built atop Twisted and developers can expose ``Deferred`` objects for asynchronous behavior.  A very brief overview will be given on Twisted ``Deferred``, afterwards aspiring developers are encouraged to read the Twisted documents on the subject (provided in the links near the bottom).
 
 
 Deferred Overview
@@ -9,7 +9,7 @@ Deferred Overview
 
 * think of it in reverse order!
 
-Create a ``Deferred`` object and attach functions (otherwise known as ``callbacks``) that will occur after a result has been returned.  Callbacks are appended to ``Deferred`` objects by way of ``addCallback()`` for when a successful result is returned or ``addErrback()`` for when an error has occurred.  The callback functions take the function name, followed by arguments and keyword arguments.  Then, when the result is available, the ``callback`` function is executed and the callback chain will be executed.  Don't worry if this doesn't make sense now, the code should clear it up.
+To demonstrate how ``Deferred`` objects work, we will create a chain of callback functions that execute after a result is available.  Don't worry if this confuses you right now, the code will clear things up.
 
 .. code-block:: python
 
@@ -17,9 +17,15 @@ Create a ``Deferred`` object and attach functions (otherwise known as ``callback
    from twisted.internet import defer
 
    def addition(result, *numbers, **kw):
+       """
+       This is the callback function
+       """
        return result + sum(numbers)
 
    def errorHasHappened(failure, msg):
+       """
+       This is the error-back function
+       """
        print(msg)
 
    # Create deferred obj and callback chain
@@ -30,7 +36,9 @@ Create a ``Deferred`` object and attach functions (otherwise known as ``callback
 
    d.callback(100)          # start the callback chain
 
-First, callback and error-back functions are established (``adition()`` and ``errorHasHappend()`` in this case).  Then upon successful execution and returning of a valid result of 100 (ie. ``d.callback(100)``), the callback chain starts, ``1, 2, 3, 4`` are added to ``100`` then the final result is printed (via ``d.addBoth(print)``.  Alternative way to fire callbacks immediately.
+First, callback and error-back functions are established (``adition()`` and ``errorHasHappend()`` in this case).  These callbacks are "registered" by the ``addCallback()`` and ``addErrback()`` functions.  Notice the callback functions (``addition()`` and ``errorHasHappend()``) take an argument ``result`` and ``failure``, these are the results returned from the previous function.  Upon successful execution and returning of a valid result of 100 (ie. ``d.callback(100)``), the callback chain starts.  First the ``addition`` function executes and adds ``1, 2, 3, 4`` to ``100`` then the final result is printed (via ``d.addBoth(print)``.  To execute the errorback chain, a value which would raise an error in the ``addition()`` function could be used, such as ``d.callback("one hundred")``.
+
+Alternatively, if the result is available immediately, ``succeed()`` or ``failure()`` can be executed:
 
 .. code-block:: python
 
@@ -42,6 +50,8 @@ First, callback and error-back functions are established (``adition()`` and ``er
 
    d = defer.succeed(200).addCallback(addition, 10, 20).addCallback(print)
    defer.fail(Exception()).addErrback(errorHasHappened, 'Errback executed')
+
+Now let's get back to the main web framework!
 
 
 Simple Deferred
@@ -80,10 +90,10 @@ The ``/simple`` route, initializes a global ``Deferred`` object and subsequent c
     curl localhost:8000/simple/fire
 
 
-Error Handling
---------------
+Error Callbacks
+---------------
 
-With standard Python exception handling, when an error is raised, a specific code can be run in the ``exception`` section.  ``Deferred`` objects can be utilized like try/except blocks, in fact, the underlaying code actually uses this exception handling to launch error callbacks.  To execute a specific function when an error occurs, we have to add an error callback by using ``Deferred.addErrback()`` or ``Deferred.addCallbacks()`` (notice the 's' for plural, for callbacks and errorbacks).
+With standard Python exception handling, when an error is raised, specific code can be run in the ``exception`` section.  ``Deferred`` objects can be utilized like try/except blocks, in fact, the underlaying code actually uses this exception handling to launch error callbacks.  To execute a specific function when an error occurs, we have to add an error callback by using ``Deferred.addErrback()``.
 
 .. code-block:: python
 
@@ -120,7 +130,7 @@ In this example, the function ``raiseError()`` results in a traceback and a trig
 "Coroutines"
 ------------
 
-With the advent of Tornado, many have grown to like coroutines as opposed to callbacks or promise approaches.  Klein can leverage what are known as ``inlineCallbacks`` which work very similarly to coroutines.  With coroutines and ``inlineCallbacks``, you can "wait" or ``yield`` a result without blocking your entire application.:
+With the advent of Tornado, many have grown to like coroutines as opposed to callbacks or promise approaches for web development.  Klein can leverage what are known as ``inlineCallbacks`` which work very similarly to coroutines.  With coroutines and ``inlineCallbacks``, you can "wait" or ``yield`` for a result without blocking your entire application.:
 
 .. code-block:: python
 

@@ -27,10 +27,7 @@ def cookiesAndSessions(request):
     """
     value = request.args.get(b'cookie', [b'default'])
     request.addCookie('cookie', value[0])
-    sess = request.getSession(ICounter)
-    # sess = request.getSession()
-    print('>>>> {0}'.format(dir(sess)))
-    return None
+    sess = request.getSession()
 
 @app.route('/redirect')
 def redirect(request):
@@ -38,11 +35,6 @@ def redirect(request):
     """
     request.redirect('https://www.yahoo.com')
 
-
-from zope.interface import Interface, Attribute
-
-class ICounter(Interface):
-    value = Attribute('An int value')
 
 app.run('localhost', 9000)
 

@@ -3,18 +3,20 @@ Basics: Routes, Methods, Variables
 
 .. note::
 
-   This section contains many similarities with Flask.  So if you know how to install pip packages and do basic Flask-style routing, this section can be skipped.  Just keep in mind that a ``request`` parameter must first be passed in all route functions.  Example::
+   This section contains many similarities with Flask.  So if you know how to perform basic Flask-style routing, this section can be skipped.  Just keep in mind that a ``request`` parameter must be passed in all route functions.  Example::
 
       route('/')
       def example(request):
          ...
 
 
-Web frameworks have come a long way, especially in Python.  A major contributing factor is the dead simple routing syntax from Flask, Bottle, Hug, etc.  Klein shares syntactical similarities with those frameworks for the most part.  The only key difference is the ``request`` parameter that gets passed into the functions after specifying the route, but we won't worry about that for now.  Let’s dive into Klein with a simple Hello World application.
+Web frameworks have come a long way, especially in Python.  A major contributing factor is the dead simple routing syntax from Flask, Bottle, Hug, etc.  Klein shares syntactical similarities with those frameworks for the most part.  The only key difference is the ``request`` parameter that gets passed into the functions after specifying the route.  However we won't worry about that for now.  Let’s dive into Klein with a simple Hello World application.
 
 
 Routes *aka* Hello World
 ------------------------
+
+*helloworld.py*
 
 .. code-block:: python
 
@@ -32,11 +34,11 @@ Routes *aka* Hello World
 
    app.run(host='localhost', port=9000)
 
-To start the Klein application by simply running the file via Python::
+To start the Klein application, simply execute the Python script::
 
    python helloworld.py
 
-This application will create a web server listening on the ``localhost`` interface on port ``9000`` all in the ``app.run()`` function.  Change the host and ports according to your requirements.  ``app.route()`` create the endpoints for your application, so in our snippet, there's the default route and a route for ``/hello``.  A quick test can be done in a web browser by navigating to http://localhost:9000 or by using the ``curl`` utility::
+The ``app.run()`` function will create a web server listening on the ``localhost`` interface on port ``9000``.  Change the host and ports according to your requirements.  ``app.route()`` creates the endpoints for your application, so in our snippet, there's the default (``/``) route and a route for ``/hello``.  A quick test can be done in a web browser by navigating to http://localhost:9000 or by using the ``curl`` utility::
 
    curl localhost:9000
    curl localhost:9000/hello
@@ -45,7 +47,7 @@ This application will create a web server listening on the ``localhost`` interfa
 Return Types
 ------------
 
-Klein accepts ``bytes``, ASCII encoded string, a Twisted Resource, or Renderable.
+Klein accepts ``bytes``, ASCII encoded string, a Twisted Resource, Twisted Renderable, or Deferred objects as return types.  Ensure the route functions only return one of these types.
 
 
 Request Methods
