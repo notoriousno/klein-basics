@@ -4,13 +4,29 @@ from twisted.web.resource import Resource
 
 app = Klein()
 
-@app.route('/args')
-def getArguments(request):
+@app.route('/write')
+def gradualWrite(request):
     """
-    Set the Content-Type to application/xml.
-    Set status code to 418.
-    Retrieve request arguments, such as form data.
-    Notice that the values are always in lists.
+    Gradually create the content body
+    """
+    for x in range(5):
+        request.write(b'<h1>Header</h1>')
+
+@app.route('/args')
+def getA(request):
+    """
+    Display all the key/value pairs from either form data or query string.
+    """
+    return '{0}'.format(request.args)
+
+@app.route('/setHeader')
+def setHeader(request):
+    """
+    This will do a bit more than just set the header...
+
+    * Set the Content-Type to application/xml.
+    * Set status code to 418.
+    * Retrieve request arguments, such as form data. Notice that the values are always in lists.
     """
     request.setHeader('Content-Type', 'application/xml')    # set the content-type to xml
     request.setResponseCode(418)        # set status code as 418 (I'm a teapot)
