@@ -38,10 +38,11 @@ This is valid code, but there's simpler syntax that can help reduce some common 
         def third(request):
             return 'third'
 
+
 Expanding
 ---------
 
-It's an inevitable fact that your application will grow and the need to import Klein objects from other module will become necessary.  Without going into great detail, Klein (or Twisted) handles rendering of responses using Twisted `Resource <http://twistedmatrix.com/documents/current/api/twisted.web.resource.Resource.html>`_ objects and behave very similar to graphs or trees.  In fact, if we continue with the tree concept, the Resource is either the "last render point" (aka. ``leaf``) or a point which splits off into other Resources (aka. a ``branch``). Find out a bit more about Twisted `Resources <http://twistedmatrix.com/documents/current/web/howto/using-twistedweb.html#web-howto-using-twistedweb-resources>`_.  If a route function passes ``branch=True`` to the ``route``, then the function can return a Twisted `Resource <http://twistedmatrix.com/documents/current/api/twisted.web.resource.Resource.html>`_.
+It's an inevitable fact that your application will grow and it may prove useful to import Klein objects from another module.  Without going into great detail, Klein can handle nested routes by passing in ``branch=True`` in the ``route`` decorator, which allows then additional endpoints can be exposed.  The route function should return Twisted a `Resource <http://twistedmatrix.com/documents/current/api/twisted.web.resource.Resource.html>`_ object, which contain endpoints of their own.  The actual implementation is much easier and less intimidating so please read on!
 
 
 Static Files
@@ -95,7 +96,7 @@ Now lets use this in another ``klein`` application.
    from klein import Klein
    from twisted.web.static import File
 
-   import blueprints
+   import blueprints    # this module holds the other Klein app
 
    app = Klein()
 
@@ -105,59 +106,21 @@ Now lets use this in another ``klein`` application.
 
    @app.route('/branch/2/', branch=True)
    def branchAgain(request):
-       return blueprints.app.resource()
+       return blueprints.app.resource()     # get the Resource object
 
-Final Example
--------------
-
-*blueprints.py*
-
-.. code-block:: python
-
-   from klein import Klein
-
-   app = Klein()
-
-   @app.route('/hello')
-   def index(request):
-       return 'Hello from the subroutes example'
-
-   with app.subroute('/blue') as sub:
-
-       @sub.route('/first')
-       def first(request):
-          return 'first'
-
-       @sub.route('/second')
-       def second(request):
-          return 'second'
-
-       @sub.route('/third')
-       def third(request):
-          return 'third'
-
-*branching.py*
-
-.. code-block:: python
-
-   from klein import Klein
-   from twisted.web.static import File
-
-   import blueprints
-
-   app = Klein()
-
-   @app.route('/static', branch=True)
-   def staticFiles(request):
-       return File('/path/to/static/files')
-
-   @app.route('/branch', branch=True)
-   def branchOff(request):
-       return blueprints.app.resource()
-
-   @app.route('/branch/2/', branch=True)
-   def branchAgain(request):
-       return blueprints.app.resource()
+For those who are familiar, this is similar to Flask and their concept of ``Blueprints``.  In my personal opinion, I favor Klein's approach as it contains less obscure function calls.
 
 
-   app.run(host='localhost', port=9000)
+Final Examples
+--------------
+
+* `static.py <https://github.com/notoriousno/klein-basics/blob/intro/src/static.py>`_
+* `blueprints.py <https://github.com/notoriousno/klein-basics/blob/intro/src/blueprints.py>`_
+* `branching.py <https://github.com/notoriousno/klein-basics/blob/intro/src/branching.py>`_
+
+
+References
+----------
+
+* `How to Use Resources <http://twistedmatrix.com/documents/current/web/howto/using-twistedweb.html#web-howto-using-twistedweb-resources>`_
+* `Resource API <http://twistedmatrix.com/documents/current/api/twisted.web.resource.Resource.html>`_

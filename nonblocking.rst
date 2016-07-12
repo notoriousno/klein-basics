@@ -7,9 +7,7 @@ Do you like ``expressjs``, but don't want to switch to Node.js?  Want non-blocki
 Deferred Overview
 -----------------
 
-* think of it in reverse order!
-
-To demonstrate how ``Deferred`` objects work, we will create a chain of callback functions that execute after a result is available.  Don't worry if this confuses you right now, the code will clear things up.
+To demonstrate how ``Deferred`` objects work, we will create a chain of callback functions that execute after a result is available.  "What's a callback chain?" I hear you say.  I'm glad you asked!  In layman's terms, a callback chain is a sequence of events that that occur after an event.  Don't worry if this makes little sense right now, the code will clear things up.
 
 .. code-block:: python
 
@@ -36,28 +34,30 @@ To demonstrate how ``Deferred`` objects work, we will create a chain of callback
 
    d.callback(100)          # start the callback chain
 
-First, callback and error-back functions are established (``adition()`` and ``errorHasHappend()`` in this case).  These callbacks are "registered" by the ``addCallback()`` and ``addErrback()`` functions.  Notice the callback functions (``addition()`` and ``errorHasHappend()``) take an argument ``result`` and ``failure``, these are the results returned from the previous function.  Upon successful execution and returning of a valid result of 100 (ie. ``d.callback(100)``), the callback chain starts.  First the ``addition`` function executes and adds ``1, 2, 3, 4`` to ``100`` then the final result is printed (via ``d.addBoth(print)``.  To execute the errorback chain, a value which would raise an error in the ``addition()`` function could be used, such as ``d.callback("one hundred")``.
-
-Alternatively, if the result is available immediately, ``succeed()`` or ``failure()`` can be executed:
+First, callback and error-back functions are established (``adition()`` and ``errorHasHappend()`` in this case).  These callbacks are "registered" by the ``addCallback()`` and ``addErrback()`` functions.  Notice the callback functions (``addition()`` and ``errorHasHappend()``) take an argument ``result`` and ``failure``, these are the results returned from the previous function.  Upon successful execution and returning of a valid result of 100 (ie. ``d.callback(100)``), the callback chain starts.  First the ``addition`` function executes and adds ``1, 2, 3, 4`` to ``100`` then the final result is printed (via ``d.addBoth(print)``.  To execute the errorback chain, a value which would raise an error in the ``addition()`` function could be used, such as ``d.callback("one hundred")``.  From a synchronous perspective, this is what's happening:
 
 .. code-block:: python
 
-   def addition(result, *numbers, **kw):
-       return result + sum(numbers)
+   from twisted.python.failure import Failure
+   from twisted.internet import defer
 
-   def errorHasHappened(failure, msg):
-       print(msg)
+   def howItWorks(result):
+       try:
+           print(addition(result, *[1,2,3,4]))
+       except TypeError as e:
+           errorHasHappend(e)
 
-   d = defer.succeed(200).addCallback(addition, 10, 20).addCallback(print)
-   defer.fail(Exception()).addErrback(errorHasHappened, 'Errback executed')
+   # ...6 months later...
+   howItWords(100)
+   
 
-Now let's get back to the main web framework!
+This is just the tip of the iceberg.  ``Deferreds`` are a vast topic and are a huge reason of what makes Twisted so amazing.  Links are provided at the bottom for further concepts that will prove useful.  Now let's get back to the main web framework!
 
 
 Simple Deferred
 ---------------
 
-Let's take a simple spin on deferreds.  Two endpoints will be created, one will create a callback chain and another will actually start the callback chain.  "What's a callback chain?"  I'm glad you asked!  In layman's terms, a callback chain is a sequence of events that that occur after an event occurs.  To do this using Twisted, we use what are known as ``Deferred``.  We first instantiate a ``Deferred`` and then append functions we want to execute after a value is returned.  Finally, when the value is ready, the callback chain is executed.  Hopefully the following example will help make sense of all this.
+Let's take a simple spin on deferreds.  Two endpoints will be created, one will create a callback chain and another will actually start the callback chain.  We first instantiate a ``Deferred`` and then append functions we want to execute after a value is returned.  Finally, when the value is ready, the callback chain is executed.  Hopefully the following example will help make sense of all this.
 
 .. code-block:: python
 
@@ -90,43 +90,6 @@ The ``/simple`` route, initializes a global ``Deferred`` object and subsequent c
     curl localhost:8000/simple/fire
 
 
-Error Callbacks
----------------
-
-With standard Python exception handling, when an error is raised, specific code can be run in the ``exception`` section.  ``Deferred`` objects can be utilized like try/except blocks, in fact, the underlaying code actually uses this exception handling to launch error callbacks.  To execute a specific function when an error occurs, we have to add an error callback by using ``Deferred.addErrback()``.
-
-.. code-block:: python
-
-    @app.route('/error')
-    def asyncError(request):
-
-        def addTag(text, tag):
-            return '<{0}>{1}</{0}>'.format(tag, text)
-
-        def raiseError():
-            int('hello')        # this will cause an error
-
-        def errorCallback(failure, request):
-            request.setResponseCode(400)
-            return 'Uh oh spaghetti-Os!<br><br>ERROR: {0}'.format(failure)
-
-
-        d = defer.maybeDeferred(raiseError)
-        err = d.addErrback(errorCallback, request)      # returns a deferred so you can chain callbacks to it
-        err.addCallback(addTag, 'strong')               # make the error msg bold
-        return d
-
-In this example, the function ``raiseError()`` results in a traceback and a triggers an error-back, which itself returns a ``Deferred``.  Since error-backs return ``Deferred``, you can chain callbacks to them.  In this case, the error message is displayed in bold.  Basically this is what's happening:
-
-.. code-block:: python
-
-    try:
-        int('hello')
-    except Exception as e:
-        failure = errorCallback(e, request)
-        return addTag(failure, 'strong')
-
-
 "Coroutines"
 ------------
 
@@ -151,11 +114,47 @@ With the advent of Tornado, many have grown to like coroutines as opposed to cal
 Threads
 -------
 
-As a rule of thumb, developers should stay away from threads if possible.  With that being said, there are times where threads are necessary, such as executing code that can take an unpredictable amount of time.  Even then, it would be best to look for other alternative solutions, but let's move on.
+As a rule of thumb, developers should stay away from threads if possible.  With that being said, there are times where threads are necessary, such as executing code that can take an unpredictable amount of time.  Even then, it would be best to look for other alternative solutions.
+
+.. code-block:: python
+
+   from time import sleep
+   from twisted.internet import threads
+
+   @app.route('/sleep/<int:n>')
+   def sleepTask(request, n):
+       """
+       A silly blocking task that will execute in a thread and return.
+
+       """
+
+       def blockingTask(n):
+           """
+           A trivial function that will block or n seconds.
+           """
+           sleep(n)
+           return 'Slept for %d seconds' % n
+
+       d = threads.deferToThread(blockingTask, n)
+       d.addCallback(addTag, 'h1')
+       return d
+
+
+Final Example
+-------------
+
+`nonblocking.py <https://github.com/notoriousno/klein-basics/blob/intro/src/nonblocking.py>`_
 
 
 Load Test
 ---------
 
-Final Example
--------------
+???
+
+References
+----------
+
+* `Introduction to Deferreds <http://twistedmatrix.com/documents/current/core/howto/defer-intro.html>`_
+* `Generate Deferreds <http://twistedmatrix.com/documents/current/core/howto/gendefer.html>`_
+* `Famous Blog Post on Twisted <http://krondo.com/an-interlude-deferred/>`_
+* `Various Types of Deferreds <https://twistedmatrix.com/documents/current/api/twisted.internet.defer.html>`_

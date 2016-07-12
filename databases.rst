@@ -1,4 +1,2 @@
-Database Integration
-====================
-
-
+Database Usage
+===============
