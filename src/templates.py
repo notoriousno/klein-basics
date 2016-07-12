@@ -2,8 +2,9 @@ from jinja2 import Template
 from klein import Klein
 from twisted.web.resource import NoResource
 
+
 app = Klein()
-template = Template('<h1>Hello {{ name }}!</h1>')
+template = Template('<h1>Hello {{ name }}! (Jinja)</h1>')
 
 with app.subroute('/template') as subroute:
     @subroute.route('/basic/<name>')
@@ -15,4 +16,6 @@ with app.subroute('/template') as subroute:
         request.setResponseCode(201)
         return template.render(name=name)
 
-app.run('localhost', 9000)
+
+if __name__ == '__main__':
+    app.run('localhost', 9000)

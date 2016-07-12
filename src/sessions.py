@@ -43,4 +43,7 @@ def GET(request):
 
     return "Visit #{0} for {1}!".format(counter.count, counter.user)
 
-app.run('localhost', 9000)
+
+if __name__ == '__main__':
+    app.run('localhost', 9000)
+

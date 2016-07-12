@@ -140,10 +140,11 @@ As a rule of thumb, developers should stay away from threads if possible.  With 
        return d
 
 
-Final Example
--------------
+Examples
+--------
 
-`nonblocking.py <https://github.com/notoriousno/klein-basics/blob/intro/src/nonblocking.py>`_
+* `nonblocking.py <https://github.com/notoriousno/klein-basics/blob/intro/src/nonblocking.py>`_
+* `interrupted.py <https://github.com/notoriousno/klein-basics/blob/intro/src/interrupted.py>`_
 
 
 Load Test

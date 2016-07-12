@@ -10,3 +10,10 @@ Cookies and Sessions
 Redirects
 ---------
 
+Interrupted Requests
+--------------------
+
+Examples
+--------
+
+*  `interrupted.py <https://github.com/notoriousno/klein-basics/blob/intro/src/interrupted.py>`_

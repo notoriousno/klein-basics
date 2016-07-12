@@ -4,7 +4,6 @@ from twisted.internet import defer, reactor
 
 app = Klein()
 
-
 @app.route('/interrupted')
 def interruptRoute(request):
     d = defer.Deferred()
@@ -21,4 +20,5 @@ def _delayedRender(request):
     request.write('Sorry for the delay'.encode('utf-8'))
 
 
-app.run('localhost', 9000)
+if __name__ == '__main__':
+    app.run('localhost', 9000)

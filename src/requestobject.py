@@ -36,5 +36,5 @@ def redirect(request):
     request.redirect('https://www.yahoo.com')
 
 
-app.run('localhost', 9000)
-
+if __name__ == '__main__':
+    app.run('localhost', 9000)
