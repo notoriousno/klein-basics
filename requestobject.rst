@@ -1,7 +1,7 @@
 Request Variable: What is it and why is it passed in?
 =====================================================
 
-You may have noticed the ``request`` argument which gets passed into every route function.  This variable is a `Request <>`_ object and serves a very important purpose of holding valuable request information.  ``Request`` objects have an abundance of functionality in them, which would be tedious to convey in such a short tutorial.  I will try to demonstrate a few key features that are commonly used.
+You may have noticed the ``request`` argument which gets passed into every route function.  This variable is a `Request <https://twistedmatrix.com/documents/current/api/twisted.web.http.Request.html>`_ object and serves a very important purpose of holding valuable request information.  ``Request`` objects have an abundance of functionality in them, which would be tedious to convey in such a short tutorial.  I will try to demonstrate a few key features that are commonly used.
 
 
 Write to the Frontend
@@ -39,6 +39,8 @@ Now lets test this route using ``GET`` with query strings and ``POST`` using for
 
    curl -X GET curl -X GET localhost:9000/args?Eminem=Superman\&Hoozier=Church
    curl -X POST -d Adele=Hello -d Adele="Fire to the Rain" localhost:9000/args
+
+One thing that catches some by surprise the fact that argument values are in a list, even if there's only a single value.
 
 
 Cookies
