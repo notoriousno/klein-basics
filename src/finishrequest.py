@@ -9,13 +9,15 @@ app = Klein()
 @app.route('/onfinish')
 def onfinish(request):
 
-    def displayTime(null, start, req):
+    def displayTime(null, start):
         """
+        Display in the logs after the request is finished
         """
         now = time()
         log.msg('end - start time = {0}'.format(now-start))
 
     begin = time()
+    request.notifyFinish().addCallback(displayTime, begin)
     return 'Start Time: {0}'.format(begin)
 
 

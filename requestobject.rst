@@ -1,7 +1,7 @@
 Request Variable: What is it and why is it passed in?
 =====================================================
 
-You may have noticed the ``request`` argument which gets passed into every route function.  This variable is a `Request <https://twistedmatrix.com/documents/current/api/twisted.web.http.Request.html>`_ object and serves a very important purpose of holding valuable request information.  ``Request`` objects have an abundance of functionality in them, which would be tedious to convey in such a short tutorial.  I will try to demonstrate a few key features that are commonly used.
+You may have noticed the ``request`` argument which gets passed into every route function.  This variable is a `Request <https://twistedmatrix.com/documents/current/api/twisted.web.http.Request.html>`_ object and serves a very important purpose of holding valuable request information.  ``Request`` objects have an abundance of functionality in them, which would be tedious to convey in such a short tutorial.  Some concepts, such as usage of ``Deferred`` and callbacks, are formally introduced in other posts.
 
 
 Write to the Frontend
@@ -66,6 +66,23 @@ Redirects
 
 Finished Request
 ----------------
+
+Run a function after the request has finished using ``Request.notifyFinish()``.
+
+.. code-block:: python
+
+   import time
+   
+   @app.route('/onfinish')
+   def onfinish(request):
+   
+       def displayTime(null, starttime):
+           now = time.time()
+           print('end - start time = {0}'.format(now-start))
+   
+       begintime = time.time()
+       request.notifyFinish().addCallback(displayTime, begintime)
+       return 'Request began at {0}'.format(begintime)
 
 Interrupted Requests
 --------------------
