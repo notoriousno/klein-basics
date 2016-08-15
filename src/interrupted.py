@@ -8,7 +8,7 @@ app = Klein()
 def interruptRoute(request):
     d = defer.Deferred()
     d.addCallback(_delayedRender)
-    reactor.callLater(10, d.callback, request)
+    reactor.callLater(5, d.callback, request)
     request.notifyFinish().addErrback(_responseFailed, d)
     return d
 

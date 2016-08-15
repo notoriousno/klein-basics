@@ -58,11 +58,21 @@ Depending on environment settings, connecting to the database server, inserting 
 Other Modules
 -------------
 
-The base ``adbapi`` module is great for quick results, but many desire a bit more functionality.  Luckily there's a vibrant array of database modules which support Twisted.  This includes standard relational databases, as well as popular NoSQL options.  There's even a good ORM available!  I'll provide a list of popular modules at the bottom, but unfortunately it's not very practical to discuss all the various options in such a general post.  Perhaps in a future post, I'll elaborate on specific modules.
+The base ``adbapi`` module is great for quick results, but many desire a bit more functionality.  Luckily there are many database modules which support Twisted.  This includes standard relational databases, as well as popular NoSQL options.  There's even a good ORM available!  Perhaps in a future post, I'll elaborate on specific modules.
+
+* `Twistar ORM <http://findingscience.com/twistar/>`_ - An ORM "similar" to SQLAlchemy and Django's ORM
+* `txpostgres <http://txpostgres.readthedocs.io/en/latest/>`_ - ``psycopg2`` + Twisted
+* `txmongo <https://github.com/twisted/txmongo>`_ - MongoDB + Twisted
+* `txredis <https://github.com/fiorix/txredisapi>`_ - Redis + Twisted
+* `RethinkDB <https://www.rethinkdb.com/docs/async-connections/#python-with-tornado-or-twisted>`_ - Realtime db with Twisted support
 
 
 Combine ``adbapi`` with Klein
 -----------------------------
+
+.. note::
+
+   SQL injection is REAL and it can happen to you!  The following example isn't safe to use in production without proper security precautions, it's just for demonstration purposes.  Remember to sanitize user input, limit access to vital db functionality, and use stored procedures if possible.  Be safe!
 
 Let's create an object that houses core database functionality required for a simple web app.  The database of choice will be ``sqlite3`` with a table called ``People``.
 
@@ -179,7 +189,4 @@ References
 
 * `Twisted RDBMS support <http://twistedmatrix.com/documents/current/core/howto/rdbms.html>`_ - Official Twisted doc
 * `adbapi.ConnectionPool API <https://twistedmatrix.com/documents/current/api/twisted.enterprise.adbapi.ConnectionPool.html>`_
-* `Twistar ORM <http://findingscience.com/twistar/>`_ - An ORM "similar" to SQLAlchemy and Django's ORM
-* `txpostgres <http://txpostgres.readthedocs.io/en/latest/>`_ - Twisted version of ``psycopg2``.
-* `txmongo <https://github.com/twisted/txmongo>`_ - Async module for MongoDB
-* `RethinkDB <https://www.rethinkdb.com/docs/async-connections/#python-with-tornado-or-twisted>`_ - Realtime db
+
