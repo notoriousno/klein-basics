@@ -1,5 +1,0 @@
-Using Frontend Templates
-========================
-
-Jinja
------

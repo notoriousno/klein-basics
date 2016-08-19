@@ -31,7 +31,6 @@ Contents
 
    basic_routes_vars
    requestobject
-   templates
    branching
    handleerrors
    nonblocking
