@@ -1,3 +1,5 @@
+import json
+
 from klein import Klein
 from werkzeug.exceptions import HTTPException
 
@@ -7,16 +9,15 @@ class BrewTea(HTTPException):
     Set status code and brief message. Overloading functions like ``get_
     """
     code = 418
-    # description = 'DEFAULT: Someone is brewing tea'
+    description = 'DEFAULT: Someone is brewing tea'
 
-    def __init__(self, request, description):
-        super(BrewTea, self).__init__()
-        self.request = request
-        self.description = description
+    def get_headers(self, environ=None):
+        return [('Content-Type', 'application/json'), ('Quote-of-the-Day', 'To be or not to be. That is the question.')]
 
     def get_body(self, environ=None):
-        self.request.setResponseCode(422)
-        return self.description
+        message = {}
+        message['description'] = self.description
+        return json.dumps(message)
 
 
 app = Klein()
@@ -28,8 +29,8 @@ def defaultBrew(request):
     """
     msg = request.content.read()
     if not msg:
-        raise BrewTea(request)
-    raise BrewTea(request, msg.decode('utf-8'))
+        raise BrewTea()
+    raise BrewTea(msg.decode('utf-8'))
 
 
 if __name__ == '__main__':
